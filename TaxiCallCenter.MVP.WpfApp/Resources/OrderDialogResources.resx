@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Greeting01" xml:space="preserve">
+    <value>Здравствуйте, заказ такси Пилот приветствует Вас! Я - робот Лера, готова принять Ваш заказ! Вы готовы к оформлению заказа такси? Да. Или. Нет.</value>
+  </data>
+  <data name="GreetingFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Вы готовы к оформлению заказа такси? Да. Или. Нет.</value>
+  </data>
+  <data name="GreetingFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="NotOrder01" xml:space="preserve">
+    <value>Если ваш вопрос адресован оператору службы заказа такси, нажмите один. Если у вас есть вопрос по пропаже вещей или жалоба - нажмите два.</value>
+  </data>
+  <data name="OrderAdditionalInfo01" xml:space="preserve">
+    <value>Расскажите ваши пожелания. Они будут переданы водителю.</value>
+  </data>
+  <data name="OrderAdditionalInfoFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Расскажите ваши пожелания. Они будут переданы водителю.</value>
+  </data>
+  <data name="OrderAdditionalInfoFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderAdditionalInfoRequest01" xml:space="preserve">
+    <value>У вас есть пожелания к заказу? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderAdditionalInfoRequestFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. У вас есть пожелания к заказу? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderAdditionalInfoRequestFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderCallerPhoneConfirm01" xml:space="preserve">
+    <value>Ваш телефон звонящий? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderCallerPhoneConfirmFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Ваш телефон звонящий? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderCallerPhoneConfirmFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderCreated01" xml:space="preserve">
+    <value>Ваш заказ принят. До свидания.</value>
+  </data>
+  <data name="OrderCustomDateTime01" xml:space="preserve">
+    <value>Уточните дату и время, на которые принять заказ.</value>
+  </data>
+  <data name="OrderCustomDateTimeFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Уточните дату и время, на которые принять заказ.</value>
+  </data>
+  <data name="OrderCustomDateTimeFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderFrom01" xml:space="preserve">
+    <value>Откуда поедем?</value>
+  </data>
+  <data name="OrderFromConfirm01" xml:space="preserve">
+    <value>Автомобиль будет подан по адресу {0}. Все верно? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderFromConfirmFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Автомобиль будет подан по адресу {0}. Всё верно? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderFromConfirmFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderFromFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Уточните адрес, куда подать автомобиль.</value>
+  </data>
+  <data name="OrderFromFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderFromNotConfirmed01" xml:space="preserve">
+    <value>Уточните адрес, куда подать автомобиль.</value>
+  </data>
+  <data name="OrderNowConfirm01" xml:space="preserve">
+    <value>Заказ принимается на ближайшее время? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderNowConfirmFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Заказ принимается на ближайшее время? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderNowConfirmFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderPhoneRequest01" xml:space="preserve">
+    <value>Назовите отчетливо номер телефона для оформления заказа.</value>
+  </data>
+  <data name="OrderPhoneRequestFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Назовите отчетливо номер телефона для оформления заказа.</value>
+  </data>
+  <data name="OrderPhoneRequestFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderTo01" xml:space="preserve">
+    <value>Куда поедем?</value>
+  </data>
+  <data name="OrderToConfirm01" xml:space="preserve">
+    <value>Поедем по адресу {0}. Все верно? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderToConfirmFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Поедем по адресу {0}. Всё верно? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderToConfirmFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderTodayConfirm01" xml:space="preserve">
+    <value>Заказ принимается на сегодня? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderTodayConfirmFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Заказ принимается на сегодня? Да. Или. Нет.</value>
+  </data>
+  <data name="OrderTodayConfirmFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderTodayTime01" xml:space="preserve">
+    <value>Уточните время, на которое принять заказ.</value>
+  </data>
+  <data name="OrderTodayTimeFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Уточните время, на которое принять заказ.</value>
+  </data>
+  <data name="OrderTodayTimeFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderToFailed01" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. Уточните адрес, куда поедем.</value>
+  </data>
+  <data name="OrderToFailed02" xml:space="preserve">
+    <value>Не могу распознать ваш ответ. До свидания.</value>
+  </data>
+  <data name="OrderToNotConfirmed01" xml:space="preserve">
+    <value>Уточните адрес, куда поедем.</value>
+  </data>
+</root>
