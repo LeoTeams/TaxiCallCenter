@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Stateless;
 using TaxiCallCenter.MVP.WpfApp.Extensions;
 using TaxiCallCenter.MVP.WpfApp.Resources;
+using TaxiCallCenter.MVP.WpfApp.Validation;
 
 namespace TaxiCallCenter.MVP.WpfApp.Models
 {
@@ -37,12 +39,13 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
         private readonly StateMachine<State, Trigger> stateMachine;
         private readonly StateMachine<State, Trigger>.TriggerWithParameters<String> processResponseTrigger;
 
+        private String callerPhone;
+
         private Address addressFrom;
         private Address addressTo;
-        private String date;
-        private String time;
         private String phone;
         private String additionalInfo;
+        private DateTime? dateTime;
 
         public OrderStateMachine(ISpeechSubsystem speechSubsystem, ILogger logger, IOrdersService ordersService)
         {
@@ -421,13 +424,15 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
             this.stateMachine.Configure(State.Complete)
                 .OnEntryAsync(this.Complete_Entry);
         }
-        public async Task Initialize()
+
+        public async Task Initialize(String callerPhone)
         {
-            if (this.stateMachine.IsInState(State.Initial))
-            {
-                await this.stateMachine.FireAsync(Trigger.Proceed);
-                this.logger.LogEvent($"Switching to state {this.stateMachine.State}");
-            }
+            Ensure.State.MeetCondition(this.stateMachine.IsInState(State.Initial));
+
+            this.callerPhone = callerPhone;
+
+            await this.stateMachine.FireAsync(Trigger.Proceed);
+            this.logger.LogEvent($"Switching to state {this.stateMachine.State}");
         }
 
         public async Task ProcessResponseAsync(String text)
@@ -575,9 +580,7 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
 
         private async Task OrderNowConfirmApply_Entry()
         {
-            var now = DateTime.Now;
-            this.date = now.ToString("d");
-            this.time = now.ToString("t");
+            this.dateTime = DateTime.Now.AddMinutes(5);
         }
 
         private async Task OrderTodayConfirm_Entry()
@@ -600,13 +603,13 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
         private async Task OrderTodayTime_Entry()
         {
             await this.speechSubsystem.SpeakAsync(OrderDialogResources.OrderTodayTime01);
-            this.speechSubsystem.SetRecognitionMode("dates");
+            this.speechSubsystem.SetRecognitionMode("queries");
         }
 
         private async Task OrderTodayTimeFailed01_Entry()
         {
             await this.speechSubsystem.SpeakAsync(OrderDialogResources.OrderTodayTimeFailed01);
-            this.speechSubsystem.SetRecognitionMode("dates");
+            this.speechSubsystem.SetRecognitionMode("queries");
         }
 
         private async Task OrderTodayTimeFailed02_Entry()
@@ -617,20 +620,21 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
         private async Task OrderTodayTimeApply_Entry(String time)
         {
             var now = DateTime.Now;
-            this.date = now.ToString("d");
-            this.time = time;
+            var parsedTime = DateTimeParser.ParseTime(time);
+            var datetext = $"{now:yyyy-MM-dd} {parsedTime}";
+            this.dateTime = DateTime.ParseExact(datetext, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
         }
 
         private async Task OrderCustomDateTime_Entry()
         {
             await this.speechSubsystem.SpeakAsync(OrderDialogResources.OrderCustomDateTime01);
-            this.speechSubsystem.SetRecognitionMode("dates");
+            this.speechSubsystem.SetRecognitionMode("queries");
         }
 
         private async Task OrderCustomDateTimeFailed01_Entry()
         {
             await this.speechSubsystem.SpeakAsync(OrderDialogResources.OrderCustomDateTimeFailed01);
-            this.speechSubsystem.SetRecognitionMode("dates");
+            this.speechSubsystem.SetRecognitionMode("queries");
         }
 
         private async Task OrderCustomDateTimeFailed02_Entry()
@@ -640,9 +644,8 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
 
         private async Task OrderCustomDateTimeApply_Entry(String datetime)
         {
-            var now = DateTime.Now;
-            this.date = datetime;
-            this.time = "";
+            var datetext = DateTimeParser.ParseDateTime(datetime);
+            this.dateTime = DateTime.ParseExact(datetext, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
         }
 
         private async Task OrderCallerPhoneConfirm_Entry()
@@ -664,7 +667,7 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
 
         private async Task OrderCallerPhoneConfirmApply_Entry()
         {
-            this.phone = "CALLER";
+            this.phone = PhoneParser.ParsePhone(this.callerPhone);
         }
 
         private async Task OrderPhoneRequest_Entry()
@@ -686,7 +689,7 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
 
         private async Task OrderPhoneRequestApply_Entry(String phone)
         {
-            this.phone = phone;
+            this.phone = PhoneParser.ParsePhone(phone);
         }
 
         private async Task OrderAdditionalInfoRequest_Entry()
@@ -752,7 +755,7 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
                 AddressFromHouse = $"{this.addressFrom.StreetNumber}",
                 AddressToStreet = $"{this.addressTo.StreetType} {this.addressTo.StreetName}",
                 AddressToHouse = $"{this.addressTo.StreetNumber}",
-                DateTime = $"{this.date} {this.time}".Trim(),
+                DateTime = this.dateTime ?? DateTime.Now.AddMinutes(5),
                 Phone = this.phone,
                 AdditionalInfo = this.additionalInfo
             });
@@ -760,12 +763,12 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
 
         private Boolean IsValidYes(String text)
         {
-            return text.ToLower() == "да";
+            return text.ToLower() == "да" || text.ToLower().StartsWith("да ");
         }
 
         private Boolean IsValidNo(String text)
         {
-            return text.ToLower() == "нет";
+            return text.ToLower() == "нет" || text.ToLower().StartsWith("нет ");
         }
 
         private Boolean IsValidAddress(String text)
@@ -775,17 +778,17 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
 
         private Boolean IsValidTime(String time)
         {
-            return true;
+            return DateTimeParser.ParseTime(time) != null;
         }
 
         private Boolean IsValidDateTime(String datetime)
         {
-            return true;
+            return DateTimeParser.ParseDateTime(datetime) != null;
         }
 
         private Boolean IsValidPhone(String phoneNumber)
         {
-            return true;
+            return PhoneParser.ParsePhone(phoneNumber) != null;
         }
 
         private Boolean IsValidAdditionalInfo(String additionalInfo)

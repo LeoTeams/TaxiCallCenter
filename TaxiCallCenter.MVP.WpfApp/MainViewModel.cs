@@ -27,6 +27,8 @@ namespace TaxiCallCenter.MVP.WpfApp
         private AudioDevice selectedOutputDevice;
         private TtsSpeaker selectedSpeaker;
         private TtsEmotion selectedEmotion;
+        private String callerPhone = "+7 912 345 67 89";
+        private Boolean acceptOrder;
 
         public MainViewModel(Window window)
         {
@@ -52,6 +54,11 @@ namespace TaxiCallCenter.MVP.WpfApp
 
             this.SelectedInputDevice = this.InputDevices.FirstOrDefault();
 
+            this.OutputDevices.Add(new AudioDevice
+            {
+                Id = -1,
+                Name = "Без синтеза речи"
+            });
             var waveOutDevices = WaveOut.DeviceCount;
             for (var deviceId = 0; deviceId < waveOutDevices; deviceId++)
             {
@@ -64,7 +71,7 @@ namespace TaxiCallCenter.MVP.WpfApp
                 ////this.Log.LogEvent($"Device {deviceId}: {deviceInfo.ProductName}, {deviceInfo.Channels} channels");
             }
 
-            this.SelectedOutputDevice = this.OutputDevices.FirstOrDefault();
+            this.SelectedOutputDevice = this.OutputDevices.Skip(1).FirstOrDefault();
 
             this.Speakers.Add(new TtsSpeaker { Name = "jane" });
             this.Speakers.Add(new TtsSpeaker { Name = "oksana" });
@@ -156,6 +163,30 @@ namespace TaxiCallCenter.MVP.WpfApp
             }
         }
 
+        public String CallerPhone
+        {
+            get => this.callerPhone;
+            set
+            {
+                if (value == this.callerPhone) return;
+                this.OnPropertyChanging();
+                this.callerPhone = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        public Boolean AcceptOrder
+        {
+            get => this.acceptOrder;
+            set
+            {
+                if (value == this.acceptOrder) return;
+                this.OnPropertyChanging();
+                this.acceptOrder = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         public AudioRecorder AudioRecorder { get; }
 
         public AudioPlayer AudioPlayer { get; }
@@ -175,10 +206,13 @@ namespace TaxiCallCenter.MVP.WpfApp
         public async Task SpeakAsync(String text)
         {
             this.Log.LogEvent($"Syntesizing text '{text}'");
-            var audio = await this.speechKitClient.GenerateAsync(this.SelectedSpeaker.Name, this.SelectedEmotion.Name, text);
-            this.Log.LogEvent($"Received syntesized text: {audio.Length} bytes");
-            this.AudioSaver.SaveBytes(this.userId, "Syntesized", Guid.NewGuid(), audio);
-            this.AudioPlayer.PlayBytes(audio);
+            if ((this.SelectedOutputDevice?.Id ?? -1) != -1)
+            {
+                var audio = await this.speechKitClient.GenerateAsync(this.SelectedSpeaker.Name, this.SelectedEmotion.Name, text);
+                this.Log.LogEvent($"Received syntesized text: {audio.Length} bytes");
+                this.AudioSaver.SaveBytes(this.userId, "Syntesized", Guid.NewGuid(), audio);
+                this.AudioPlayer.PlayBytes(audio);
+            }
         }
 
         public async Task<RecognitionResults> RecognizeAsync(Byte[] audioBytes)
@@ -210,7 +244,7 @@ namespace TaxiCallCenter.MVP.WpfApp
         public async Task InitAsync()
         {
             this.OrderStateMachine = new OrderStateMachine(new SpeechSubsystem(this), new Logger(this), new OrdersService(this));
-            await this.OrderStateMachine.Initialize();
+            await this.OrderStateMachine.Initialize(this.CallerPhone);
         }
 
         public async Task ProcessManualInput(String text)
@@ -267,18 +301,23 @@ namespace TaxiCallCenter.MVP.WpfApp
                 this.mainViewModel = mainViewModel;
             }
 
-            public Task CreateOrderAsync(OrderInfo order)
+            public async Task CreateOrderAsync(OrderInfo order)
             {
-                this.mainViewModel.window.Dispatcher.Invoke(() =>
+                if (this.mainViewModel.TaximeterService == null)
                 {
-                    MessageBox.Show(this.mainViewModel.window, $@"Откуда: {order.AddressFromStreet}, {order.AddressFromHouse}
+                    this.mainViewModel.window.Dispatcher.Invoke(() =>
+                    {
+                        MessageBox.Show(this.mainViewModel.window, $@"Откуда: {order.AddressFromStreet}, {order.AddressFromHouse}
 Куда: {order.AddressToStreet}, {order.AddressToHouse}
-Дата и время: {order.DateTime}
+Дата и время: {order.DateTime:yyyy-MM-dd HH:mm}
 Телефон: {order.Phone}
 Дополнительные пожелания: {order.AdditionalInfo}");
-                });
-
-                return Task.FromResult(0);
+                    });
+                }
+                else
+                {
+                    await this.mainViewModel.TaximeterService.MakeOrderAsync(order, this.mainViewModel.AcceptOrder);
+                }
             }
         }
     }

@@ -223,7 +223,7 @@ namespace TaxiCallCenter.MVP.WpfApp.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Автомобиль будет подан по адресу {0}. Все верно? Да. Или. Нет..
+        ///   Looks up a localized string similar to Автомобиль будет подан по адресу {0}. Всё верно? Да. Или. Нет..
         /// </summary>
         internal static string OrderFromConfirm01 {
             get {
@@ -340,7 +340,7 @@ namespace TaxiCallCenter.MVP.WpfApp.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Поедем по адресу {0}. Все верно? Да. Или. Нет..
+        ///   Looks up a localized string similar to Поедем по адресу {0}. Всё верно? Да. Или. Нет..
         /// </summary>
         internal static string OrderToConfirm01 {
             get {

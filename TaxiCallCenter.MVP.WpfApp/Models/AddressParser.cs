@@ -23,8 +23,8 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
 
     public static class AddressParser
     {
-        private static readonly Regex Pattern1 = new Regex(@"(?<streetType>улица|проспект|переулок|площадь) (?<streetName>.+) дом (?<streetNumber>\d+)$");
-        private static readonly Regex Pattern2 = new Regex(@"(?<streetType>улица|проспект|переулок|площадь) (?<streetName>.+) (?<streetNumber>\d+)$");
+        private static readonly Regex Pattern1 = new Regex(@"^(?<streetType>улица|проспект|переулок|площадь) (?<streetName>.+) дом (?<streetNumber>\d+)$");
+        private static readonly Regex Pattern2 = new Regex(@"^(?<streetType>улица|проспект|переулок|площадь) (?<streetName>.+) (?<streetNumber>\d+)$");
 
         public static Address ParseAddress(String address)
         {

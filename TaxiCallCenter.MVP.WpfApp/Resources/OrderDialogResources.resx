@@ -172,7 +172,7 @@
     <value>Откуда поедем?</value>
   </data>
   <data name="OrderFromConfirm01" xml:space="preserve">
-    <value>Автомобиль будет подан по адресу {0}. Все верно? Да. Или. Нет.</value>
+    <value>Автомобиль будет подан по адресу {0}. Всё верно? Да. Или. Нет.</value>
   </data>
   <data name="OrderFromConfirmFailed01" xml:space="preserve">
     <value>Не могу распознать ваш ответ. Автомобиль будет подан по адресу {0}. Всё верно? Да. Или. Нет.</value>
@@ -211,7 +211,7 @@
     <value>Куда поедем?</value>
   </data>
   <data name="OrderToConfirm01" xml:space="preserve">
-    <value>Поедем по адресу {0}. Все верно? Да. Или. Нет.</value>
+    <value>Поедем по адресу {0}. Всё верно? Да. Или. Нет.</value>
   </data>
   <data name="OrderToConfirmFailed01" xml:space="preserve">
     <value>Не могу распознать ваш ответ. Поедем по адресу {0}. Всё верно? Да. Или. Нет.</value>

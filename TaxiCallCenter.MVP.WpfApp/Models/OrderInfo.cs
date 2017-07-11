@@ -16,12 +16,10 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
 
         public String AddressToHouse { get; set; }
 
-        public String DateTime { get; set; }
+        public DateTime DateTime { get; set; }
 
         public String Phone { get; set; }
 
         public String AdditionalInfo { get; set; }
-
-        public DateTime TrueDateTime { get; set; }
     }
 }

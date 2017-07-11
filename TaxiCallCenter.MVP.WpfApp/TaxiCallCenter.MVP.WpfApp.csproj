@@ -72,7 +72,9 @@
     <Compile Include="BaseViewModel.cs" />
     <Compile Include="Models\AddressParser.cs" />
     <Compile Include="Models\AudioDevice.cs" />
+    <Compile Include="Models\DateTimeParser.cs" />
     <Compile Include="Models\OrderInfo.cs" />
+    <Compile Include="Models\PhoneParser.cs" />
     <Compile Include="Models\TtsEmotion.cs" />
     <Compile Include="Models\TtsSpeaker.cs" />
     <Compile Include="Properties\Annotations.cs" />

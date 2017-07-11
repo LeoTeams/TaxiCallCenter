@@ -86,6 +86,12 @@ namespace TaxiCallCenter.MVP.WpfApp
 
         private async void StartButton_Click(Object sender, RoutedEventArgs e)
         {
+            if (PhoneParser.ParsePhone(this.ViewModel.CallerPhone) == null)
+            {
+                MessageBox.Show("Invalid Caller ID");
+                return;
+            }
+
             await this.ViewModel.InitAsync();
         }
 
@@ -98,16 +104,16 @@ namespace TaxiCallCenter.MVP.WpfApp
                     await this.ViewModel.InitializeTaximiter();
                 }
 
-                await this.ViewModel.TaximeterService.MakeOrderAsync(new OrderInfo
-                {
-                    Phone = "9123456789",
-                    AddressFromStreet = "проспект Ленина",
-                    AddressFromHouse = "108",
-                    AddressToStreet = "улица Малахова",
-                    AddressToHouse = "97",
-                    AdditionalInfo = "дополнительные пожелания",
-                    TrueDateTime = DateTime.Now.AddMinutes(30).AddHours(1).AddDays(2)
-                });
+                //await this.ViewModel.TaximeterService.MakeOrderAsync(new OrderInfo
+                //{
+                //    Phone = "9123456789",
+                //    AddressFromStreet = "проспект Ленина",
+                //    AddressFromHouse = "108",
+                //    AddressToStreet = "улица Малахова",
+                //    AddressToHouse = "97",
+                //    AdditionalInfo = "дополнительные пожелания",
+                //    TrueDateTime = DateTime.Now.AddMinutes(30).AddHours(1).AddDays(2)
+                //});
             }
             catch (Exception ex)
             {

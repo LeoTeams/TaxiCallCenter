@@ -62,7 +62,14 @@ namespace TaxiCallCenter.MVP.WpfApp
 
                 Ensure.State.MeetCondition(this.driver.Url.StartsWith("https://lk.taximeter.yandex.ru"));
 
-                this.driver.FindElement(By.LinkText("Orders")).Click();
+                try
+                {
+                    this.driver.FindElement(By.LinkText("Заказы")).Click();
+                }
+                catch
+                {
+                    this.driver.FindElement(By.LinkText("Orders")).Click();
+                }
 
                 await this.RandomDelayAsync(1000, 1500);
 
@@ -76,7 +83,7 @@ namespace TaxiCallCenter.MVP.WpfApp
             }
         }
 
-        public async Task<String> MakeOrderAsync(OrderInfo order)
+        public async Task<String> MakeOrderAsync(OrderInfo order, Boolean accept)
         {
             await this.semaphore.WaitAsync();
             try
@@ -105,15 +112,15 @@ namespace TaxiCallCenter.MVP.WpfApp
                 await this.RandomDelayAsync(100, 200);
 
                 //this.driver.FindElement(By.Id("time")).SendKeys(order.TrueDateTime.ToString("HH:mm"));
-                this.SetElementValue("time", order.TrueDateTime.ToString("HH:mm"));
+                this.SetElementValue("time", order.DateTime.ToString("HH:mm"));
                 await this.RandomDelayAsync(100, 200);
-                this.driver.FindElement(By.Id("date")).SendKeys(order.TrueDateTime.ToString("MM/dd/yyyy"));
+                this.driver.FindElement(By.Id("date")).SendKeys(order.DateTime.ToString("MM/dd/yyyy"));
                 await this.RandomDelayAsync(100, 200);
 
                 var wait = new WebDriverWait(this.driver, TimeSpan.FromSeconds(10));
                 wait.Until(x => x.FindElement(By.Id("contanier-count-order")).Displayed);
 
-                //this.SetElementValue("AddressFromStreet", order.AddressFromStreet);
+                this.SetElementValue("AddressFromStreet", "");
                 this.driver.FindElement(By.Id("AddressFromStreet")).SendKeys(order.AddressFromStreet);
                 await this.RandomDelayAsync(100, 200);
                 //this.SetElementValue("AddressFromHouse", order.AddressFromHouse);
@@ -138,6 +145,18 @@ namespace TaxiCallCenter.MVP.WpfApp
 
                 wait.Until(x => !String.IsNullOrEmpty(x.FindElement(By.Id("calc-cost")).GetAttribute("value")));
                 var price = this.driver.FindElement(By.Id("calc-cost")).GetAttribute("value");
+
+                if (accept)
+                {
+                    this.driver.FindElement(By.Id("accept")).Click();
+                    ////await this.RandomDelayAsync(1000, 2000);
+                    ////this.driver.Close();
+                    ////if (this.dispatcherHomeWindowHandle != this.driver.CurrentWindowHandle)
+                    ////{
+                    ////    this.driver.SwitchTo().Window(this.dispatcherHomeWindowHandle);
+                    ////}
+                }
+
                 return price;
             }
             finally
