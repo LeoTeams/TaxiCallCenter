@@ -164,6 +164,14 @@ namespace TaxiCallCenter.MVP.WpfApp
 
         public OrderStateMachine OrderStateMachine { get; set; }
 
+        public TaximeterService TaximeterService { get; set; }
+
+        public async Task InitializeTaximiter()
+        {
+            this.TaximeterService = new TaximeterService();
+            await this.TaximeterService.InitializeAsync();
+        }
+
         public async Task SpeakAsync(String text)
         {
             this.Log.LogEvent($"Syntesizing text '{text}'");
@@ -263,8 +271,8 @@ namespace TaxiCallCenter.MVP.WpfApp
             {
                 this.mainViewModel.window.Dispatcher.Invoke(() =>
                 {
-                    MessageBox.Show(this.mainViewModel.window, $@"Откуда: {order.AddressFrom}
-Куда: {order.AddressTo}
+                    MessageBox.Show(this.mainViewModel.window, $@"Откуда: {order.AddressFromStreet}, {order.AddressFromHouse}
+Куда: {order.AddressToStreet}, {order.AddressToHouse}
 Дата и время: {order.DateTime}
 Телефон: {order.Phone}
 Дополнительные пожелания: {order.AdditionalInfo}");

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using TaxiCallCenter.MVP.WpfApp.Annotations;
+using JetBrains.Annotations;
 
 namespace TaxiCallCenter.MVP.WpfApp
 {

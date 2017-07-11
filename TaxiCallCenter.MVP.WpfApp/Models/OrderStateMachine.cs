@@ -37,8 +37,8 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
         private readonly StateMachine<State, Trigger> stateMachine;
         private readonly StateMachine<State, Trigger>.TriggerWithParameters<String> processResponseTrigger;
 
-        private String addressFrom;
-        private String addressTo;
+        private Address addressFrom;
+        private Address addressTo;
         private String date;
         private String time;
         private String phone;
@@ -493,7 +493,7 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
 
         private async Task OrderFromConfirm_Entry(String address)
         {
-            this.addressFrom = address;
+            this.addressFrom = AddressParser.ParseAddress(address);
             await this.speechSubsystem.SpeakAsync(String.Format(OrderDialogResources.OrderFromConfirm01, this.addressFrom));
             this.speechSubsystem.SetRecognitionMode("queries");
         }
@@ -534,7 +534,7 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
 
         private async Task OrderToConfirm_Entry(String address)
         {
-            this.addressTo = address;
+            this.addressTo = AddressParser.ParseAddress(address);
             await this.speechSubsystem.SpeakAsync(String.Format(OrderDialogResources.OrderToConfirm01, this.addressTo));
             this.speechSubsystem.SetRecognitionMode("queries");
         }
@@ -748,8 +748,10 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
             this.speechSubsystem.StopCommunication();
             await this.ordersService.CreateOrderAsync(new OrderInfo
             {
-                AddressFrom = this.addressFrom,
-                AddressTo = this.addressTo,
+                AddressFromStreet = $"{this.addressFrom.StreetType} {this.addressFrom.StreetName}",
+                AddressFromHouse = $"{this.addressFrom.StreetNumber}",
+                AddressToStreet = $"{this.addressTo.StreetType} {this.addressTo.StreetName}",
+                AddressToHouse = $"{this.addressTo.StreetNumber}",
                 DateTime = $"{this.date} {this.time}".Trim(),
                 Phone = this.phone,
                 AdditionalInfo = this.additionalInfo
@@ -768,7 +770,7 @@ namespace TaxiCallCenter.MVP.WpfApp.Models
 
         private Boolean IsValidAddress(String text)
         {
-            return true;
+            return AddressParser.ParseAddress(text) != null;
         }
 
         private Boolean IsValidTime(String time)

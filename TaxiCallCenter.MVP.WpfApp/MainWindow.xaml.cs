@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +16,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 using TaxiCallCenter.MVP.WpfApp.Extensions;
 using TaxiCallCenter.MVP.WpfApp.Models;
 
@@ -82,6 +87,32 @@ namespace TaxiCallCenter.MVP.WpfApp
         private async void StartButton_Click(Object sender, RoutedEventArgs e)
         {
             await this.ViewModel.InitAsync();
+        }
+
+        private async void TestButton_Click(Object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (this.ViewModel.TaximeterService == null)
+                {
+                    await this.ViewModel.InitializeTaximiter();
+                }
+
+                await this.ViewModel.TaximeterService.MakeOrderAsync(new OrderInfo
+                {
+                    Phone = "9123456789",
+                    AddressFromStreet = "проспект Ленина",
+                    AddressFromHouse = "108",
+                    AddressToStreet = "улица Малахова",
+                    AddressToHouse = "97",
+                    AdditionalInfo = "дополнительные пожелания",
+                    TrueDateTime = DateTime.Now.AddMinutes(30).AddHours(1).AddDays(2)
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }
