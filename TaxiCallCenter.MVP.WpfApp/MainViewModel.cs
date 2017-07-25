@@ -19,7 +19,7 @@ namespace TaxiCallCenter.MVP.WpfApp
     public class MainViewModel : BaseViewModel
     {
         private readonly Window window;
-        private readonly SpeechKitClient speechKitClient = new SpeechKitClient("0fb959a9-2236-4e00-a13b-74f9f3b78a14");
+        private readonly SpeechKitClient speechKitClient = new SpeechKitClient("ceeefb0b-8573-4279-9180-898867ad72e1");
         private readonly Guid userId = Guid.NewGuid();
 
         private String speechTopic = "queries";
@@ -91,17 +91,25 @@ namespace TaxiCallCenter.MVP.WpfApp
         {
             //this.AudioPlayer.PlayBytes(e.RecordingBytes);
             this.Log.LogEvent("Sending data for recognition");
-            var recognitionResults = await this.RecognizeAsync(e.RecordingBytes);
-            if (recognitionResults.Success && recognitionResults.Variants.Any())
+            try
             {
-                var result = recognitionResults.Variants.First();
-                this.Log.LogEvent($"Recognized text '{result.Text}' (confidence - {result.Confidence:N4})");
-                await this.OrderStateMachine.ProcessResponseAsync(result.Text);
+                var recognitionResults = await this.RecognizeAsync(e.RecordingBytes);
+           
+                if (recognitionResults.Success && recognitionResults.Variants.Any())
+                {
+                    var result = recognitionResults.Variants.First();
+                    this.Log.LogEvent($"Recognized text '{result.Text}' (confidence - {result.Confidence:N4})");
+                    await this.OrderStateMachine.ProcessResponseAsync(result.Text);
+                }
+                else
+                {
+                    this.Log.LogEvent($"Recognition failed");
+                    await this.OrderStateMachine.ProcessRecognitionFailure();
+                }
             }
-            else
+            catch (System.FormatException error)
             {
-                this.Log.LogEvent($"Recognition failed");
-                await this.OrderStateMachine.ProcessRecognitionFailure();
+                this.Log.LogEvent(error.Message);
             }
         }
 
@@ -215,7 +223,7 @@ namespace TaxiCallCenter.MVP.WpfApp
             }
         }
 
-        public async Task<RecognitionResults> RecognizeAsync(Byte[] audioBytes)
+        public async Task<RecognitionResults> RecognizeAsync(byte[] audioBytes)
         {
             var result = await this.speechKitClient.RecognizeAsync(this.userId, this.speechTopic, audioBytes);
             var xml = XElement.Parse(result);
