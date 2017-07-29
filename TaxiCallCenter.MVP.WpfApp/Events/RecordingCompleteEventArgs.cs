@@ -15,4 +15,8 @@ namespace TaxiCallCenter.MVP.WpfApp.Events
 
         public Byte[] RecordingBytes { get; }
     }
+
+    public class AccessForRecording: EventArgs
+    {
+    }
 }

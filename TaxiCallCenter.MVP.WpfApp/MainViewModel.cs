@@ -30,6 +30,8 @@ namespace TaxiCallCenter.MVP.WpfApp
         private String callerPhone = "+7 912 345 67 89";
         private Boolean acceptOrder;
 
+        public event EventHandler<AccessForRecording> ListenAccessed;
+
         public MainViewModel(Window window)
         {
             this.window = window;
@@ -39,6 +41,7 @@ namespace TaxiCallCenter.MVP.WpfApp
             this.AudioSaver = new AudioSaver();
 
             this.AudioRecorder.RecordingComplete += this.AudioRecorderOnRecordingComplete;
+            this.ListenAccessed += this.AudioRecorder.AccessForListenRecived;
 
             var waveInDevices = WaveIn.DeviceCount;
             for (var deviceId = 0; deviceId < waveInDevices; deviceId++)
@@ -89,28 +92,24 @@ namespace TaxiCallCenter.MVP.WpfApp
 
         private async void AudioRecorderOnRecordingComplete(Object sender, RecordingCompleteEventArgs e)
         {
+            // TODO: add button replay after speach 
             //this.AudioPlayer.PlayBytes(e.RecordingBytes);
             this.Log.LogEvent("Sending data for recognition");
-            try
-            {
-                var recognitionResults = await this.RecognizeAsync(e.RecordingBytes);
+            var recognitionResults = await this.RecognizeAsync(e.RecordingBytes);
            
-                if (recognitionResults.Success && recognitionResults.Variants.Any())
-                {
-                    var result = recognitionResults.Variants.First();
-                    this.Log.LogEvent($"Recognized text '{result.Text}' (confidence - {result.Confidence:N4})");
-                    await this.OrderStateMachine.ProcessResponseAsync(result.Text);
-                }
-                else
-                {
-                    this.Log.LogEvent($"Recognition failed");
-                    await this.OrderStateMachine.ProcessRecognitionFailure();
-                }
-            }
-            catch (System.FormatException error)
+            if (recognitionResults.Success && recognitionResults.Variants.Any())
             {
-                this.Log.LogEvent(error.Message);
+                var result = recognitionResults.Variants.First();
+                this.Log.LogEvent($"Recognized text '{result.Text}' (confidence - {result.Confidence:N4})");
+                await this.OrderStateMachine.ProcessResponseAsync(result.Text);
             }
+            else
+            {
+                this.Log.LogEvent($"Recognition failed");
+                await this.OrderStateMachine.ProcessRecognitionFailure();
+            }
+
+            
         }
 
         public ObservableCollection<LogEntry> Log { get; } = new ObservableCollection<LogEntry>();
@@ -205,6 +204,11 @@ namespace TaxiCallCenter.MVP.WpfApp
 
         public TaximeterService TaximeterService { get; set; }
 
+        public void OnLisetenAccess()
+        {
+            this.ListenAccessed?.Invoke(this, new AccessForRecording());
+        }
+
         public async Task InitializeTaximiter()
         {
             this.TaximeterService = new TaximeterService();
@@ -221,32 +225,46 @@ namespace TaxiCallCenter.MVP.WpfApp
                 this.AudioSaver.SaveBytes(this.userId, "Syntesized", Guid.NewGuid(), audio);
                 this.AudioPlayer.PlayBytes(audio);
             }
+            // TODO: Refactor lifecycle of view. Change this access to recognize and speach completed tasks.
+            this.OnLisetenAccess();
         }
 
-        public async Task<RecognitionResults> RecognizeAsync(byte[] audioBytes)
+        public async Task<RecognitionResults> RecognizeAsync(Byte[] audioBytes)
         {
-            var result = await this.speechKitClient.RecognizeAsync(this.userId, this.speechTopic, audioBytes);
-            var xml = XElement.Parse(result);
-            if (xml.Name != "recognitionResults")
+            try
             {
-                throw new InvalidOperationException();
-            }
-
-            var results = new RecognitionResults();
-            if (xml.Attribute("success")?.Value == "1")
-            {
-                results.Success = true;
-                foreach (var element in xml.Elements("variant"))
+                var result = await this.speechKitClient.RecognizeAsync(this.userId, this.speechTopic, audioBytes);
+                var xml = XElement.Parse(result);
+                if (xml.Name != "recognitionResults")
                 {
-                    results.Variants.Add(new RecognitionVariant
-                    {
-                        Confidence = Double.Parse(element.Attribute("confidence")?.Value ?? "0"),
-                        Text = element.Value.Trim()
-                    });
+                    throw new InvalidOperationException();
                 }
-            }
 
-            return results;
+                var results = new RecognitionResults();
+                if (xml.Attribute("success")?.Value == "1")
+                {
+                    results.Success = true;
+                    foreach (var element in xml.Elements("variant"))
+                    {
+                        var confidence = element.Attribute("confidence")?.Value ?? "0";
+                        confidence = confidence.Replace('.', ',');
+                        var text = element.Value.Trim();
+                        results.Variants.Add(new RecognitionVariant
+                        {
+                            Confidence = Double.Parse(confidence),
+                            Text = text
+                        });
+                    }
+                }
+                return results;
+            }
+            catch (FormatException exception)
+            {
+                Log.LogEvent(exception.Message);
+                var results = new RecognitionResults();
+                return results;
+            }
+                
         }
 
         public async Task InitAsync()

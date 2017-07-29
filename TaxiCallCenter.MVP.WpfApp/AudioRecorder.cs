@@ -14,7 +14,7 @@ namespace TaxiCallCenter.MVP.WpfApp
     public class AudioRecorder
     {
         private readonly MainViewModel mainViewModel;
-
+        private bool canListen = false;
         private WaveIn waveIn;
         private WaveFileWriter waveWriter;
         private MemoryStream waveStream;
@@ -27,14 +27,20 @@ namespace TaxiCallCenter.MVP.WpfApp
 
         public event EventHandler<RecordingCompleteEventArgs> RecordingComplete;
 
+        public void AccessForListenRecived(object sender, AccessForRecording e)
+        {
+            this.canListen = true;
+        }
+
         public void StartRecording()
         {
-            if (this.waveIn != null)
+            if (this.waveIn != null || !this.canListen)
             {
                 return;
             }
 
             this.mainViewModel.Log.LogEvent("Recording started");
+            this.canListen = false;
             this.waveIn = new WaveIn();
             this.waveIn.DeviceNumber = this.mainViewModel.SelectedInputDevice?.Id ?? 0;
             this.waveIn.WaveFormat = new WaveFormat(16000, 16, 1);
